@@ -1,0 +1,24 @@
+{
+  "name": "advise-network",
+  "version": "1.0.0",
+  "description": "Advise Network",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advise-Education/Advise-Daemon.git"
+  },
+  "author": "Advise Education",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Advise-Education/Advise-Daemon/issues"
+  },
+  "homepage": "https://github.com/Advise-Education/Advise-Daemon#readme"
+}
