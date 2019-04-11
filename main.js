@@ -5,6 +5,7 @@ var bodyParser = require("body-parser");
 var jwt        = require("jsonwebtoken");
 var path = require("path");
 var glob = require('glob');
+var config = require('./config.json');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -53,11 +54,13 @@ function verifyToken(req, res, next){
 }
 
 //Test the Token
-app.get('/api/test', verifyToken, (req, res) => {
-  jwt.verify(req.query.token, 'SuperSecRetKey', (err, authData)=>{
-      if(err){
+// app.get('/api/test', verifyToken, (req, res) => {
+app.get('/api/test', (req, res) => {
+
+  jwt.verify(req.query.token, config.token_secret, (err, authData)=>{
+      if(err) {
           res.sendStatus(403);
-      }else{
+      } else{
           res.json({
               msg: "Success, you are signed in!",
               authData
@@ -74,6 +77,6 @@ io.on('connection', function (socket) {
   });
 });
 
-server.listen(3000, function() {
-  console.log("Advise Daemon running on port 3000");
+server.listen(3100, function() {
+  console.log("Advise Daemon running on port 3100");
 });
