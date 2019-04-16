@@ -1,3 +1,3 @@
-[submodule "modules/module-google-oauth2"]
-	path = modules/module-google-oauth2
-	url = https://github.com/Advise-Education/modules-google-oauth2.git
+[submodule "modules/google-oauth2"]
+	path = modules/google-oauth2
+	url = https://github.com/Advise-Education/module-google-oauth2.git
