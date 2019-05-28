@@ -1,4 +1,4 @@
 {
     "token_secret": "SecretToken",
-    "token_duration": 3600
+    "token_duration": "3600"
 }
