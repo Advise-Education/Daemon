@@ -77,6 +77,6 @@ io.on('connection', function (socket) {
   });
 });
 
-server.listen(3000, function() {
+server.listen(3100, function() {
   console.log("Advise Daemon running on port 3100");
 });
