@@ -37,8 +37,16 @@ router.get('/callback',
             hd: 'advise.pw'
         }),
         (req, res) => {
+            console.log(1);
             jwt.sign(req.user.profile, global_config.token_secret, global_config.token_duration, (err, token) => {
-                res.json({token});
+                if(err) {
+                    res.send(err);
+                }
+                else {
+                    console.log(token);
+                    res.json(token);
+                }
+                
             });
             const fs = require('fs');
             fs.writeFile(path.resolve( __dirname, "./google-oauth2.json"), JSON.stringify(req.user), function(err) {
@@ -58,3 +66,4 @@ router.get('/login', passport.authenticate('oauth2', {
     })
 );
 module.exports = router;
+123123123
