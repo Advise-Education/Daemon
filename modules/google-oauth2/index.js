@@ -66,4 +66,3 @@ router.get('/login', passport.authenticate('oauth2', {
     })
 );
 module.exports = router;
-123123123
