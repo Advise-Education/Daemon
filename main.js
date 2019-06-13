@@ -34,6 +34,7 @@ getModules(function (err, modules) {
   }
 });
 
+
 function verifyToken(req, res, next){
   console.log(req.query.token);
   //Request header with authorization key
@@ -53,13 +54,16 @@ function verifyToken(req, res, next){
   }
 }
 
+
+
 //Test the Token
 // app.get('/api/test', verifyToken, (req, res) => {
 app.get('/api/test', (req, res) => {
 
   jwt.verify(req.query.token, config.token_secret, (err, authData)=>{
       if(err) {
-          res.sendStatus(403);
+          res.json(err);
+          console.log(err);
       } else{
           res.json({
               msg: "Success, you are signed in!",
@@ -77,6 +81,6 @@ io.on('connection', function (socket) {
   });
 });
 
-server.listen(3100, function() {
-  console.log("Advise Daemon running on port 3100");
+server.listen(3000, function() {
+  console.log("Advise Daemon running on port 3000");
 });
