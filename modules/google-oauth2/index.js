@@ -7,6 +7,8 @@ var router = express.Router();
 const OAuth2Strategy = require('passport-oauth2');
 const InternalOAuthError = require('passport-oauth2').InternalOAuthError;
 const passport = require('passport');
+const request = require('request');
+
 
 router.use(passport.initialize());
 passport.serializeUser((user, done) => {
@@ -24,7 +26,6 @@ let client = new OAuth2Strategy({
 },
 function(accessToken, refreshToken, profile, done) {
     done(null, {
-        verified_domain: false,
         profile: profile,
         token: accessToken
     });
@@ -32,35 +33,44 @@ function(accessToken, refreshToken, profile, done) {
 passport.use(client);
 
 router.get('/callback',
-        passport.authenticate('oauth2', {
-            failureRedirect: '/',
-            hd: 'advise.pw'
-        }),
-        (req, res) => {
-            console.log(1);
-            jwt.sign(req.user.profile, global_config.token_secret, global_config.token_duration, (err, token) => {
-                if(err) {
-                    res.send(err);
-                }
-                else {
-                    console.log(token);
-                    res.json(token);
-                }
-                
-            });
-            const fs = require('fs');
-            fs.writeFile(path.resolve( __dirname, "./google-oauth2.json"), JSON.stringify(req.user), function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-
-                console.log("The file was saved!");
-            }); 
+    passport.authenticate('oauth2', {
+        failureRedirect: '/',
+}),
+(req, res) => {
+    request('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='+req.user.token, { json: true }, (err, profile) => {
+        if (err) { return console.log(err); }
+            if (global_config.domain.indexOf(profile.body.hd) >= 0) { //Check if logging in with proper domain name.
+                jwt.sign({
+                    data: profile.body
+                }, global_config.token_secret, { expiresIn: global_config.token_duration}, (err, token) => {
+                    if(err) {
+                        console.log(err);
+                        res.json(err);
+                    }
+                    else {
+                        if (typeof token === 'undefined' || token === null) {
+                            res.json({error: "Failed to generate token"}); //Token does not exist
+                        }
+                        else {
+                            res.json(token); //Token exists, send response
+                        }
+                        
+                    }
+                });
+            }
+            else {
+                res.json({error: "Invalid Account"});
+            }
             
-        }
-    );
+
+            
+            
+    })
+                
+}); 
+
 router.get('/login', passport.authenticate('oauth2', {
-    scope: ['profile', 'email', 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly','https://www.googleapis.com/auth/calendar.readonly', 'openid'], 
+    scope: ['profile', 'email'], 
     accessType: 'offline', 
     prompt: 'select_account' 
     })
