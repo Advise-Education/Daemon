@@ -38,7 +38,10 @@ router.get('/callback',
 }),
 (req, res) => {
     request('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='+req.user.token, { json: true }, (err, profile) => {
-        if (err) { return console.log(err); }
+        if (err) { 
+            res.json({error: "Failed to retrieve Google oauth2 data."});
+        }
+        else {
             if (global_config.domain.indexOf(profile.body.hd) >= 0) { //Check if logging in with proper domain name.
                 jwt.sign({
                     data: profile.body
@@ -59,8 +62,10 @@ router.get('/callback',
                 });
             }
             else {
-                res.json({error: "Invalid Account"});
+                res.json({error: "Invalid Account."});
             }
+        }
+            
             
 
             
