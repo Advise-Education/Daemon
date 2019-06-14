@@ -4,5 +4,6 @@
     "domain": [
         "advise.pw",
         "stjohnschicago.org"
-    ]
+    ],
+    "webui": "http://localhost:3001/"
 }

@@ -8,8 +8,6 @@ const OAuth2Strategy = require('passport-oauth2');
 const InternalOAuthError = require('passport-oauth2').InternalOAuthError;
 const passport = require('passport');
 const request = require('request');
-
-
 router.use(passport.initialize());
 passport.serializeUser((user, done) => {
     done(null, user);
@@ -24,14 +22,13 @@ let client = new OAuth2Strategy({
     clientSecret: config.OAuth.clientSecret,
     callbackURL: '/module/google-oauth2/callback'
 },
-function(accessToken, refreshToken, profile, done) {
+function(accessToken, refreshToken, profile, done) { //Refresh token = ?
     done(null, {
         profile: profile,
         token: accessToken
     });
 });
 passport.use(client);
-
 router.get('/callback',
     passport.authenticate('oauth2', {
         failureRedirect: '/',
@@ -52,28 +49,26 @@ router.get('/callback',
                     }
                     else {
                         if (typeof token === 'undefined' || token === null) {
-                            res.json({error: "Failed to generate token"}); //Token does not exist
+                            var response = {
+                                "error": "Failed to generate token"
+                            }
+                            res.redirect(global_config.webui + "login/callback?response=" + JSON.stringify(response));
                         }
                         else {
-                            res.json(token); //Token exists, send response
+                            res.redirect(global_config.webui + "login/callback?token=" + token);
                         }
-                        
                     }
                 });
             }
             else {
-                res.json({error: "Invalid Account."});
+                var response = {
+                    "error": "Invalid Account"
+                }
+                res.redirect(global_config.webui + "login/callback?response=" + JSON.stringify(response));
             }
         }
-            
-            
-
-            
-            
-    })
-                
+    })         
 }); 
-
 router.get('/login', passport.authenticate('oauth2', {
     scope: ['profile', 'email'], 
     accessType: 'offline', 
