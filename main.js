@@ -34,45 +34,6 @@ getModules(function (err, modules) {
   }
 });
 
-
-function verifyToken(req, res, next){
-  console.log(req.query.token);
-  //Request header with authorization key
-  const bearerHeader = req.headers['authorization'];
-  //Check if there is  a header
-  if(typeof bearerHeader !== 'undefined'){
-      const bearer = bearerHeader.split(' ');
-      
-      //Get Token arrray by spliting
-      const bearerToken = bearer[1];
-      req.query.token = bearerToken;
-      //call next middleware
-      next();
-  }else{
-      console.log(1);
-      res.sendStatus(403);
-  }
-}
-
-
-
-//Test the Token
-// app.get('/api/test', verifyToken, (req, res) => {
-app.get('/api/test', (req, res) => {
-
-  jwt.verify(req.query.token, config.token_secret, (err, authData)=>{
-      if(err) {
-          res.json(err);
-          console.log(err);
-      } else{
-          res.json({
-              msg: "Success, you are signed in!",
-              authData
-          });
-      }
-  });
-});
-
 //Socket.io stuff for later
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });

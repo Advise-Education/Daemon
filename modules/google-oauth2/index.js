@@ -1,13 +1,12 @@
 var path = require('path');
 const config = require( path.resolve( __dirname, "./config.json" ) );
 const global_config = require( path.resolve("./config.json" ) );
-var jwt        = require("jsonwebtoken");
+var jwt = require("jsonwebtoken");
 var express = require('express');
 var router = express.Router();
 const OAuth2Strategy = require('passport-oauth2');
 const InternalOAuthError = require('passport-oauth2').InternalOAuthError;
 const passport = require('passport');
-const request = require('request');
 const database = require('../../database');
 const {google} = require('googleapis');
 const key = require("./serviceaccount.json");
@@ -25,9 +24,6 @@ google.options({
 });
 
 //Functions
-
-
-
 function createUser(user_obj, callback) {
     var dbUser = new database.User({ 
         userid: user_obj.id,
@@ -62,33 +58,6 @@ function getUser(userKey, callback) {
         }
     });
 } 
-function orgUnitList(orgUnitPath, callback) {
-
-    admin.orgunits.list({
-        customerId: "my_customer",
-        orgUnitPath: orgUnitPath,
-        type: "all"
-    })
-    .then(res => {
-        return callback(null, res.data); 
-    })
-    .catch(error => {
-        return callback(error);
-    });
-}
- function orgUnitUsers(orgUnitPath, callback) {
-    admin.users.list({
-        customer: "my_customer",
-        query: "orgUnitPath="+orgUnitPath,
-        orderBy: "familyName"
-    })
-    .then(res => {
-        return callback(null, res.data);
-    })
-    .catch(error => {
-        return callback(error);
-    });
-}
 
 //Initialize OAuth2 Strategy
 let client = new OAuth2Strategy({
