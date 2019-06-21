@@ -203,7 +203,12 @@ router.get('/callback',
                             });
                         }
                         else {
-                            respond(data);
+                            //!!!! Update User -- Not working as of now !!!!
+                            database.User.updateOne({ userid: user.id }, { user }, function (err, response) {
+                                console.log(response);
+                                respond(data);
+                            });
+                            
                         }
                         
                     });
